@@ -1,44 +1,34 @@
-<?php
-	header("Access-Control-Allow-Origin: *");
-	header("Content-Type: application/json; charset=UTF-8");
+<?php	
+	require_once(BASE_PATH . 'db.config.php');
+	require_once(BASE_UTILS . 'classesOfUser.php');
+	require_once(BASE_UTILS . 'getUserInfo.php');
+	require_once(BASE_UTILS . 'getClassInfo.php');
 	
-	require_once("../../db.config.php");
-	require_once("../classesOfUser.php");
-	require_once("../getUserInfo.php");
-	require_once("../getClassInfo.php");
-	
-	if(!isset($_POST['session'])){
-		header('HTTP/1.1 400 Bad Request');
-		exit;
-	}		
-	require_once("../session.php");
-
-	//BEGIN AUTHENTICATION BLOCK
-	if(!isSessionValid($link, $_POST['session'])) {
-		header('HTTP/1.1 401 Unauthorized');
-	}
-	//END AUTHENTICATION BLOCK
-	
-	if(isset($_POST["username"])) {
-		$id = getUserInfo("id", $_POST["username"], $link, "username");
+	if(isset($_POST['id'])) {
+		$id = $_POST['id'];
 	} else {
-		$id = getUserInfo("id", $_POST['session'], $link);
+		$session = $_SERVER['HTTP_X_AUTHENTICATION'];
+		$id = getUserInfo('id', $session, $link);
 	}
 	
-	$what = explode(",", $_POST['what']);
+	$what = explode(',', $_POST['what']);
 	$out = array();
 	
 	foreach($what as $e) {
-		if($e == "classrooms" && !isset($_POST["username"])) {
-			$out["classrooms"] = classesOfUser($id, $link);
-			continue;
-		} else if($e == "settings" && !isset($_POST["username"])) {
-			$out["settings"] = json_decode(getUserInfo("settings", $id, $link, "id"), true);
-			continue;
+		switch($e) {
+			case 'classrooms':
+				$out['classrooms'] = classesOfUser($id, $link);
+			break;
+			case 'settings':
+				$out['settings'] = json_decode(getUserInfo('settings', $id, $link, 'id'), true);
+			break;
+			default:
+				$out[$e] = getUserInfo($e, $id, $link, 'id');
+			break;
 		}
-		
-		$out[$e] = getUserInfo($e, $id, $link, "id");
 	}
 	
+	//OUTPUT
+	header('Content-Type: application/json; charset=UTF-8');
 	echo json_encode($out);
 ?>
