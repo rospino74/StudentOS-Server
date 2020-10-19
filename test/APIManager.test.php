@@ -1,12 +1,14 @@
 <?php
 	error_reporting(E_ALL | E_STRICT);
+	use PHPUnit\Framework\TestCase;
+
 
 	//defining path
 	define('BASE_PATH', str_replace('\\', '/', dirname(__DIR__)) . '/');
 	define('BASE_API', BASE_PATH . 'Server/api/');
 	define('BASE_UTILS', BASE_PATH . 'Server/utils/');	
 
-	class testAPIManager extends PHPUnit_Framework_TestCase {
+	class testAPIManager extends TestCase {
 		public function testHTTPS($headers = array()) {
 			$this->assertTrue(
 				(isset($headers['HTTPS']) && $headers['HTTPS'] != 'on') || 
