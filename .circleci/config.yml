@@ -28,6 +28,7 @@ jobs:
           command: |
             wget -O phpunit https://phar.phpunit.de/phpunit-9.phar
             chmod +x phpunit
+            ./phpunit --version
       - run:      
           name: Waiting for MySQL
           command: |
