@@ -12,21 +12,21 @@
 		/**
 		 * @dataProvider providerHTTPS
 		 */
-		public function testHTTPS($headers = array()) {
-			$this->assertEquals($headers['result'],
-				(isset($headers['HTTPS']) && $headers['HTTPS'] != 'on') || 
-				(isset($headers['X-Forwarded-Proto']) && $headers['X-Forwarded-Proto'] == 'http')
+		public function testHTTPS($headers) {
+			$this->assertEquals($headers[2],
+				(isset($headers[0]) && $headers[0] != 'on') || 
+				(isset($headers[1]) && $headers[1] == 'http')
 			);
 		}
 		public function providerHTTPS() {
 			return [
-				['HTTPS' =>'off', 'X-Forwarded-Proto' => null, 		'result' => true],
-				['HTTPS' =>'off', 'X-Forwarded-Proto' => 'http', 	'result' => true],
-				['HTTPS' => null, 'X-Forwarded-Proto' => 'http',	'result' => true],
-				['HTTPS' => null, 'X-Forwarded-Proto' => null, 		'result' => true],
-				['HTTPS' => 'on', 'X-Forwarded-Proto' => null, 		'result' => false],
-				['HTTPS' => null, 'X-Forwarded-Proto' => 'https',	'result' => false],
-				['HTTPS' => 'on', 'X-Forwarded-Proto' => 'https', 	'result' => false]
+				['off',  null, 		true],
+				['off',  'http', 	true],
+				[ null,  'http',	true],
+				[ null,  null, 		true],
+				[ 'on',  null, 		false],
+				[ null,  'https',	false],
+				[ 'on',  'https', 	false]
 			];
 		}
 		
@@ -46,26 +46,26 @@
 
 			//Check of the domain is allowed
 			$this->assertEquals(
-				$origin['result'],
-				isset($origin['address']) && 
-				in_array(preg_replace('/http[s]?:\/\//mi', '', strtolower($origin['address'])), $allowed_domains)
+				$origin[1],
+				isset($origin[0]) && 
+				in_array(preg_replace('/http[s]?:\/\//mi', '', strtolower($origin[0])), $allowed_domains)
 			);
 		}
 		public function providerCORS() {
 			return [
-				['address' =>'localhost', 				'result' => true],
-				['address' =>'https://localhost', 		'result' => true],
-				['address' =>'http://localhost', 		'result' => true],
-				['address' =>'localhost:3000', 			'result' => true],
-				['address' =>'https://localhost:3000', 	'result' => true],
-				['address' =>'http://localhost:3000', 	'result' => true],
-				['address' =>'localhost:80', 			'result' => true],
-				['address' =>'https://localhost:80', 	'result' => true],
-				['address' =>'http://localhost:80', 	'result' => true],
-				['address' =>'https://google.com', 		'result' => false],
-				['address' =>'http://192.168.1.0', 		'result' => false],
-				['address' =>'https://localhost:3000', 	'result' => false],
-				['address' =>'https://127.0.0.1:2000', 	'result' => false]
+				['localhost', 				true],
+				['https://localhost', 		true],
+				['http://localhost', 		true],
+				['localhost:3000', 			true],
+				['https://localhost:3000', 	true],
+				['http://localhost:3000', 	true],
+				['localhost:80', 			true],
+				['https://localhost:80', 	true],
+				['http://localhost:80', 	true],
+				['https://google.com', 		false],
+				['http://192.168.1.0', 		false],
+				['https://localhost:3000', 	false],
+				['https://127.0.0.1:2000', 	false]
 			];
 		}
 
@@ -73,24 +73,24 @@
 		 * @dataProvider providerParseRequestedUrl
 		*/
 		public function testParseRequestedUrl($urls) {
-			$toRemove = dirname($urls['address'], 2) . '/api/';
+			$toRemove = dirname($urls[0], 2) . '/api/';
 			$this->assertEquals(
-				$urls['result'],
-				str_replace($toRemove, '', $_SERVER['REQUEST_URI'])
+				$urls[1],
+				str_replace($toRemove, '', $urls[0])
 			);
 		}
 		public function providerParseRequestedUrl() {
 			return [
-				['address' =>'StudentOS/Code/api/isSessionValid',	'result' => 'isSessionValid'],
-				['address' =>'StudentOS/Code/api/addPost',			'result' => 'addPost'],
-				['address' =>'StudentOS/Code/api/getPost',			'result' => 'getPost'],
-				['address' =>'StudentOS/Code/api/deletePost',		'result' => 'deletePost'],
-				['address' =>'StudentOS/Code/api/addComment',	 	'result' => 'addComment'],
-				['address' =>'StudentOS/Code/api/deleteComment',	'result' => 'deleteComment'],
-				['address' =>'StudentOS/Code/api/getCommentByParentId',	'result' => 'getCommentByParentId'],
-				['address' =>'StudentOS/Code/api/getUserInfo',		'result' => 'getUserInfo'],
-				['address' =>'StudentOS/Code/api/updateSettings',	'result' => 'updateSettings'],
-				['address' =>'StudentOS/Code/api/uploadNewIcon',	'result' => 'uploadNewIcon']
+				['StudentOS/Code/api/isSessionValid',	'isSessionValid'],
+				['StudentOS/Code/api/addPost',			'addPost'],
+				['StudentOS/Code/api/getPost',			'getPost'],
+				['StudentOS/Code/api/deletePost',		'deletePost'],
+				['StudentOS/Code/api/addComment',	 	'addComment'],
+				['StudentOS/Code/api/deleteComment',	'deleteComment'],
+				['StudentOS/Code/api/getCommentByParentId',	'getCommentByParentId'],
+				['StudentOS/Code/api/getUserInfo',		'getUserInfo'],
+				['StudentOS/Code/api/updateSettings',	'updateSettings'],
+				['StudentOS/Code/api/uploadNewIcon',	'uploadNewIcon']
 			];
 		}
 	}
