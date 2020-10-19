@@ -41,4 +41,4 @@ jobs:
       - run: ls
       - run:
           name: Test APIWorker.test.php
-          command: ./phpunit ./test/APIWorker.test.php
+          command: cat ./test/APIWorker.test.php
