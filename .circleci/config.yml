@@ -10,7 +10,7 @@ jobs:
             MYSQL_USER: user
             MYSQL_PASSWORD: passw0rd
 
-    working_directory: ~/project/
+    working_directory: ~/APIWorker/
     steps:
       - run:
           name: Upgrade the system
@@ -38,6 +38,7 @@ jobs:
               sleep 1
             done
             echo Failed waiting for MySQL && exit 1
+      - run: ls
       - run:
           name: Test APIWorker.test.php
-          command: ./phpunit test/APIWorker.test.php
+          command: ./phpunit ./test/APIWorker.test.php
