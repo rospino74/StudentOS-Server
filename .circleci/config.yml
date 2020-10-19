@@ -22,12 +22,12 @@ jobs:
           command: |
             sudo docker-php-ext-install pdo_mysql
             sudo docker-php-ext-enable pdo_mysql
+      - checkout
       - run:
           name: Install phpunit
           command: |
             wget -O phpunit https://phar.phpunit.de/phpunit-9.phar
             chmod +x phpunit
-      - checkout
       - run:      
           name: Waiting for MySQL
           command: |
