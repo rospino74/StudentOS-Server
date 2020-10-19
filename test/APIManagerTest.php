@@ -8,7 +8,7 @@
 	define('BASE_API', BASE_PATH . 'Server/api/');
 	define('BASE_UTILS', BASE_PATH . 'Server/utils/');	
 
-	class testAPIManager extends TestCase {
+	class APIManagerTest extends TestCase {
 		public function testHTTPS($headers = array()) {
 			$this->assertTrue(
 				(isset($headers['HTTPS']) && $headers['HTTPS'] != 'on') || 

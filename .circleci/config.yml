@@ -41,4 +41,4 @@ jobs:
             echo Failed waiting for MySQL && exit 1
       - run:
           name: Test APIManager.test.php
-          command: ./phpunit test/APIManager.test.php
+          command: ./phpunit test/APIManagerTest.php
