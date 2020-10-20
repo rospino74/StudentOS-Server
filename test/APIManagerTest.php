@@ -12,10 +12,11 @@
 		/**
 		 * @dataProvider providerHTTPS
 		 */
-		public function testHTTPS($headers) {
-			$this->assertEquals($headers[2],
-				(isset($headers[0]) && $headers[0] != 'on') || 
-				(isset($headers[1]) && $headers[1] == 'http')
+		public function testHTTPS($https, $XForwardedProtocol, $expected) {
+			$this->assertEquals(
+				$expected,
+				(isset($https) && $$https != 'on') || 
+				(isset($XForwardedProtocol) && $XForwardedProtocol == 'http')
 			);
 		}
 		public function providerHTTPS() {
@@ -32,8 +33,9 @@
 		
 		/**
 		 * @dataProvider providerCORS
+		 * @depend testHTTPS
 		 */
-		public function testCORS($origin) {
+		public function testCORS($origin, $expected) {
 			//Allowed domains
 			$allowed_domains = array(
 				'localhost:3000',
@@ -46,9 +48,9 @@
 
 			//Check of the domain is allowed
 			$this->assertEquals(
-				$origin[1],
-				isset($origin[0]) && 
-				in_array(preg_replace('/http[s]?:\/\//mi', '', strtolower($origin[0])), $allowed_domains)
+				$expected,
+				isset($origin) && 
+				in_array(preg_replace('/http[s]?:\/\//mi', '', strtolower($origin)), $allowed_domains)
 			);
 		}
 		public function providerCORS() {
@@ -65,18 +67,20 @@
 				['https://google.com', 		false],
 				['http://192.168.1.0', 		false],
 				['https://localhost:3000', 	false],
-				['https://127.0.0.1:2000', 	false]
+				['https://127.0.0.1:2000', 	false],
+				['ftp://127.0.0.1',			false],
+				[null, 						false]
 			];
 		}
 
 		/**
 		 * @dataProvider providerParseRequestedUrl
 		*/
-		public function testParseRequestedUrl($urls) {
-			$toRemove = dirname($urls[0], 2) . '/api/';
+		public function testParseRequestedUrl($url, $expected) {
+			$toRemove = dirname($url, 2) . '/api/';
 			$this->assertEquals(
-				$urls[1],
-				str_replace($toRemove, '', $urls[0])
+				$expected,
+				str_replace($toRemove, '', $url)
 			);
 		}
 		public function providerParseRequestedUrl() {
