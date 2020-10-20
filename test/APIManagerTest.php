@@ -15,7 +15,7 @@
 		public function testHTTPS($https, $XForwardedProtocol, $expected) {
 			$this->assertEquals(
 				$expected,
-				(isset($https) && $$https != 'on') || 
+				(isset($https) && $https != 'on') || 
 				(isset($XForwardedProtocol) && $XForwardedProtocol == 'http')
 			);
 		}
@@ -24,7 +24,7 @@
 				['off',  null, 		true],
 				['off',  'http', 	true],
 				[ null,  'http',	true],
-				[ null,  null, 		true],
+				[ null,  null, 		false],
 				[ 'on',  null, 		false],
 				[ null,  'https',	false],
 				[ 'on',  'https', 	false]
@@ -66,7 +66,7 @@
 				['http://localhost:80', 	true],
 				['https://google.com', 		false],
 				['http://192.168.1.0', 		false],
-				['https://localhost:3000', 	false],
+				['ssh://localhost:1234', 	false],
 				['https://127.0.0.1:2000', 	false],
 				['ftp://127.0.0.1',			false],
 				[null, 						false]
